@@ -4,6 +4,8 @@ import android.media.MediaPlayer
 import android.media.PlaybackParams
 import android.net.Uri
 import io.github.zyrouge.symphony.Symphony
+import io.github.zyrouge.symphony.services.radio.mediaplayers.AndroidMediaPlayer
+import io.github.zyrouge.symphony.services.radio.mediaplayers.MediaPlayerI
 import io.github.zyrouge.symphony.utils.Logger
 import kotlinx.coroutines.launch
 import java.util.Timer
@@ -24,15 +26,11 @@ class RadioPlayer(val symphony: Symphony, val id: String, val uri: Uri) {
     }
 
     enum class State {
-        Unprepared,
-        Preparing,
-        Prepared,
-        Finished,
-        Destroyed,
+        Unprepared, Preparing, Prepared, Finished, Destroyed,
     }
 
-    private val unsafeMediaPlayer: MediaPlayer
-    private val mediaPlayer: MediaPlayer? get() = if (usable) unsafeMediaPlayer else null
+    private val unsafeMediaPlayer: MediaPlayerI
+    private val mediaPlayer: MediaPlayerI? get() = if (usable) unsafeMediaPlayer else null
     private var onPrepared: RadioPlayerOnPreparedListener? = null
     private var onPlaybackPosition: RadioPlayerOnPlaybackPositionListener? = null
     private var onFinish: RadioPlayerOnFinishListener? = null
@@ -53,15 +51,15 @@ class RadioPlayer(val symphony: Symphony, val id: String, val uri: Uri) {
 
     val usable get() = state == State.Prepared
     val fadePlayback get() = symphony.settings.fadePlayback.value
-    val audioSessionId get() = mediaPlayer?.audioSessionId
+    val audioSessionId get() = if (mediaPlayer is MediaPlayer) (mediaPlayer as MediaPlayer).audioSessionId else null
     val isPlaying get() = mediaPlayer?.isPlaying == true
 
     val playbackPosition
         get() = mediaPlayer?.let {
             try {
                 PlaybackPosition(
-                    played = it.currentPosition.toLong(),
-                    total = it.duration.toLong(),
+                    played = it.currentTrackTimeMs.toLong(),
+                    total = it.trackDurationMs.toLong(),
                 )
             } catch (_: IllegalStateException) {
                 null
@@ -69,10 +67,10 @@ class RadioPlayer(val symphony: Symphony, val id: String, val uri: Uri) {
         }
 
     init {
-        unsafeMediaPlayer = MediaPlayer().also { ump ->
+        unsafeMediaPlayer = AndroidMediaPlayer().also { ump ->
             ump.setOnPreparedListener {
                 state = State.Prepared
-                ump.playbackParams.setAudioFallbackMode(PlaybackParams.AUDIO_FALLBACK_MODE_DEFAULT)
+                ump.mediaPlayer.playbackParams.audioFallbackMode = PlaybackParams.AUDIO_FALLBACK_MODE_DEFAULT
                 createDurationTimer()
                 onPrepared?.invoke()
             }
@@ -150,8 +148,7 @@ class RadioPlayer(val symphony: Symphony, val id: String, val uri: Uri) {
                     onFinish = {
                         onFinish(it)
                         fader = null
-                    }
-                )
+                    })
                 fader?.start()
             }
 
@@ -175,7 +172,7 @@ class RadioPlayer(val symphony: Symphony, val id: String, val uri: Uri) {
         mediaPlayer?.let {
             val isPlaying = it.isPlaying
             try {
-                it.playbackParams = it.playbackParams.setSpeed(to)
+                it.setPlaybackSpeed(to)
                 speed = to
             } catch (err: Exception) {
                 Logger.error("RadioPlayer", "changing speed failed", err)
@@ -194,7 +191,7 @@ class RadioPlayer(val symphony: Symphony, val id: String, val uri: Uri) {
         mediaPlayer?.let {
             val isPlaying = it.isPlaying
             try {
-                it.playbackParams = it.playbackParams.setPitch(to)
+                it.setPitch(to)
                 pitch = to
             } catch (err: Exception) {
                 Logger.error("RadioPlayer", "changing pitch failed", err)
