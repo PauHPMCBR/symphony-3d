@@ -23,6 +23,26 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        externalNativeBuild {
+            cmake {
+                arguments("-DANDROID_STL=c++_shared")
+                version = "3.22.1"
+                abiFilters.add("arm64-v8a")
+            }
+            version = "3.22.1"
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+        }
+    }
+
+    sourceSets {
+        getByName("main") {
+            jniLibs.srcDir("src/main/jni")
+        }
     }
 
     signingConfigs {
