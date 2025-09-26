@@ -457,16 +457,16 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
 }
 
 JNIEXPORT void JNICALL
-Java_io_github_zyrouge_symphony_services_AudioEngine_setCallbackNative(JNIEnv *env, jobject thiz,
-                                                                       jobject callback) {
+Java_io_github_zyrouge_symphony_services_OpenAlAudioEngine_setCallbackNative(JNIEnv *env, jobject thiz,
+                                                                             jobject callback) {
     if (g_audioEngine) {
         g_audioEngine->setCallback(env, callback);
     }
 }
 
 JNIEXPORT jboolean JNICALL
-Java_io_github_zyrouge_symphony_services_AudioEngine_initOpenAL(JNIEnv *env, jobject thiz,
-                                                                jstring jselectedHrtf) {
+Java_io_github_zyrouge_symphony_services_OpenAlAudioEngine_initOpenAL(JNIEnv *env, jobject thiz,
+                                                                      jstring jselectedHrtf) {
     const char *selectedHrtf = env->GetStringUTFChars(jselectedHrtf, nullptr);
     bool result = g_audioEngine->initialize(env, selectedHrtf);
     env->ReleaseStringUTFChars(jselectedHrtf, selectedHrtf);
@@ -474,7 +474,7 @@ Java_io_github_zyrouge_symphony_services_AudioEngine_initOpenAL(JNIEnv *env, job
 }
 
 JNIEXPORT void JNICALL
-Java_io_github_zyrouge_symphony_services_AudioEngine_cleanupOpenAL(JNIEnv *env, jobject thiz) {
+Java_io_github_zyrouge_symphony_services_OpenAlAudioEngine_cleanupOpenAL(JNIEnv *env, jobject thiz) {
     if (g_audioEngine) {
         g_audioEngine->cleanup();
         g_audioEngine.reset();
@@ -482,8 +482,8 @@ Java_io_github_zyrouge_symphony_services_AudioEngine_cleanupOpenAL(JNIEnv *env, 
 }
 
 JNIEXPORT jstring JNICALL
-Java_io_github_zyrouge_symphony_services_AudioEngine_createSound(JNIEnv *env, jobject thiz,
-                                                                 jstring jFilePath) {
+Java_io_github_zyrouge_symphony_services_OpenAlAudioEngine_createSound(JNIEnv *env, jobject thiz,
+                                                                       jstring jFilePath) {
     const char *filePath = env->GetStringUTFChars(jFilePath, nullptr);
     SoundId soundId = g_audioEngine->createSound(filePath);
     env->ReleaseStringUTFChars(jFilePath, filePath);
@@ -492,8 +492,8 @@ Java_io_github_zyrouge_symphony_services_AudioEngine_createSound(JNIEnv *env, jo
 }
 
 JNIEXPORT void JNICALL
-Java_io_github_zyrouge_symphony_services_AudioEngine_playSound(JNIEnv *env, jobject thiz,
-                                                               jstring jSoundId) {
+Java_io_github_zyrouge_symphony_services_OpenAlAudioEngine_playSound(JNIEnv *env, jobject thiz,
+                                                                     jstring jSoundId) {
     const char *soundId = env->GetStringUTFChars(jSoundId, nullptr);
     if (g_audioEngine && soundId) {
         g_audioEngine->playSound(soundId);
@@ -502,8 +502,8 @@ Java_io_github_zyrouge_symphony_services_AudioEngine_playSound(JNIEnv *env, jobj
 }
 
 JNIEXPORT void JNICALL
-Java_io_github_zyrouge_symphony_services_AudioEngine_stopSound(JNIEnv *env, jobject thiz,
-                                                               jstring jSoundId) {
+Java_io_github_zyrouge_symphony_services_OpenAlAudioEngine_stopSound(JNIEnv *env, jobject thiz,
+                                                                     jstring jSoundId) {
     const char *soundId = env->GetStringUTFChars(jSoundId, nullptr);
     if (g_audioEngine && soundId) {
         g_audioEngine->stopSound(soundId);
@@ -512,15 +512,15 @@ Java_io_github_zyrouge_symphony_services_AudioEngine_stopSound(JNIEnv *env, jobj
 }
 
 JNIEXPORT void JNICALL
-Java_io_github_zyrouge_symphony_services_AudioEngine_stopAllSounds(JNIEnv *env, jobject thiz) {
+Java_io_github_zyrouge_symphony_services_OpenAlAudioEngine_stopAllSounds(JNIEnv *env, jobject thiz) {
     if (g_audioEngine) {
         g_audioEngine->stopAllSounds();
     }
 }
 
 JNIEXPORT void JNICALL
-Java_io_github_zyrouge_symphony_services_AudioEngine_pauseSound(JNIEnv *env, jobject thiz,
-                                                                jstring jSoundId) {
+Java_io_github_zyrouge_symphony_services_OpenAlAudioEngine_pauseSound(JNIEnv *env, jobject thiz,
+                                                                      jstring jSoundId) {
     const char *soundId = env->GetStringUTFChars(jSoundId, nullptr);
     if (g_audioEngine && soundId) {
         g_audioEngine->pauseSound(soundId);
@@ -529,8 +529,8 @@ Java_io_github_zyrouge_symphony_services_AudioEngine_pauseSound(JNIEnv *env, job
 }
 
 JNIEXPORT void JNICALL
-Java_io_github_zyrouge_symphony_services_AudioEngine_resumeSound(JNIEnv *env, jobject thiz,
-                                                                 jstring jSoundId) {
+Java_io_github_zyrouge_symphony_services_OpenAlAudioEngine_resumeSound(JNIEnv *env, jobject thiz,
+                                                                       jstring jSoundId) {
     const char *soundId = env->GetStringUTFChars(jSoundId, nullptr);
     if (g_audioEngine && soundId) {
         g_audioEngine->resumeSound(soundId);
@@ -539,11 +539,11 @@ Java_io_github_zyrouge_symphony_services_AudioEngine_resumeSound(JNIEnv *env, jo
 }
 
 JNIEXPORT void JNICALL
-Java_io_github_zyrouge_symphony_services_AudioEngine_setSoundPosition(JNIEnv *env, jobject thiz,
-                                                                      jstring jSoundId,
-                                                                      jfloat angle,
-                                                                      jfloat radius,
-                                                                      jfloat height) {
+Java_io_github_zyrouge_symphony_services_OpenAlAudioEngine_setSoundPosition(JNIEnv *env, jobject thiz,
+                                                                            jstring jSoundId,
+                                                                            jfloat angle,
+                                                                            jfloat radius,
+                                                                            jfloat height) {
     const char *soundId = env->GetStringUTFChars(jSoundId, nullptr);
     if (g_audioEngine && soundId) {
         g_audioEngine->setSoundPosition(soundId, angle, radius, height);
@@ -552,9 +552,9 @@ Java_io_github_zyrouge_symphony_services_AudioEngine_setSoundPosition(JNIEnv *en
 }
 
 JNIEXPORT void JNICALL
-Java_io_github_zyrouge_symphony_services_AudioEngine_setPlaybackTime(JNIEnv *env, jobject thiz,
-                                                                     jstring jSoundId,
-                                                                     jfloat seconds) {
+Java_io_github_zyrouge_symphony_services_OpenAlAudioEngine_setPlaybackTime(JNIEnv *env, jobject thiz,
+                                                                           jstring jSoundId,
+                                                                           jfloat seconds) {
     const char *soundId = env->GetStringUTFChars(jSoundId, nullptr);
     if (g_audioEngine && soundId) {
         g_audioEngine->setPlaybackTime(soundId, seconds);
@@ -563,8 +563,8 @@ Java_io_github_zyrouge_symphony_services_AudioEngine_setPlaybackTime(JNIEnv *env
 }
 
 JNIEXPORT jfloat JNICALL
-Java_io_github_zyrouge_symphony_services_AudioEngine_getPlaybackTime(JNIEnv *env, jobject thiz,
-                                                                     jstring jSoundId) {
+Java_io_github_zyrouge_symphony_services_OpenAlAudioEngine_getPlaybackTime(JNIEnv *env, jobject thiz,
+                                                                           jstring jSoundId) {
     const char *soundId = env->GetStringUTFChars(jSoundId, nullptr);
     float position = -1.0f;
     if (g_audioEngine && soundId) {
@@ -575,8 +575,8 @@ Java_io_github_zyrouge_symphony_services_AudioEngine_getPlaybackTime(JNIEnv *env
 }
 
 JNIEXPORT jfloat JNICALL
-Java_io_github_zyrouge_symphony_services_AudioEngine_getSoundDuration(JNIEnv *env, jobject thiz,
-                                                                      jstring jSoundId) {
+Java_io_github_zyrouge_symphony_services_OpenAlAudioEngine_getSoundDuration(JNIEnv *env, jobject thiz,
+                                                                            jstring jSoundId) {
     const char *soundId = env->GetStringUTFChars(jSoundId, nullptr);
     float duration = 0.0f;
     if (g_audioEngine && soundId) {
@@ -587,8 +587,8 @@ Java_io_github_zyrouge_symphony_services_AudioEngine_getSoundDuration(JNIEnv *en
 }
 
 JNIEXPORT void JNICALL
-Java_io_github_zyrouge_symphony_services_AudioEngine_setStereoAngle(JNIEnv *env, jobject thiz,
-                                                                    jfloat angle) {
+Java_io_github_zyrouge_symphony_services_OpenAlAudioEngine_setStereoAngle(JNIEnv *env, jobject thiz,
+                                                                          jfloat angle) {
     if (g_audioEngine) {
         g_audioEngine->setStereoAngle(angle);
     }
