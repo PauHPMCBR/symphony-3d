@@ -1,8 +1,8 @@
 package io.github.zyrouge.symphony.services.radio
 
-import android.media.MediaPlayer
 import android.media.PlaybackParams
 import android.net.Uri
+import android.util.Log
 import io.github.zyrouge.symphony.Symphony
 import io.github.zyrouge.symphony.services.radio.mediaplayers.AndroidMediaPlayer
 import io.github.zyrouge.symphony.services.radio.mediaplayers.MediaPlayerI
@@ -51,7 +51,7 @@ class RadioPlayer(val symphony: Symphony, val id: String, val uri: Uri) {
 
     val usable get() = state == State.Prepared
     val fadePlayback get() = symphony.settings.fadePlayback.value
-    val audioSessionId get() = if (mediaPlayer is MediaPlayer) (mediaPlayer as MediaPlayer).audioSessionId else null
+    val audioSessionId get() = if (mediaPlayer is AndroidMediaPlayer) (mediaPlayer as AndroidMediaPlayer).mediaPlayer.audioSessionId else null
     val isPlaying get() = mediaPlayer?.isPlaying == true
 
     val playbackPosition
@@ -68,17 +68,21 @@ class RadioPlayer(val symphony: Symphony, val id: String, val uri: Uri) {
 
     init {
         unsafeMediaPlayer = AndroidMediaPlayer().also { ump ->
-            ump.setOnPreparedListener {
+            ump.mediaPlayer.setOnPreparedListener {
                 state = State.Prepared
                 ump.mediaPlayer.playbackParams.audioFallbackMode = PlaybackParams.AUDIO_FALLBACK_MODE_DEFAULT
                 createDurationTimer()
                 onPrepared?.invoke()
+
+                Log.d("rp", "State prepared")
+                Log.d("rp", "Is AndroidMediaPlayer: ${(mediaPlayer is AndroidMediaPlayer)}")
+                Log.d("rp", "etc: ${(mediaPlayer as AndroidMediaPlayer).mediaPlayer.audioSessionId}")
             }
-            ump.setOnCompletionListener {
+            ump.mediaPlayer.setOnCompletionListener {
                 state = State.Finished
                 onFinish?.invoke()
             }
-            ump.setOnErrorListener { _, what, extra ->
+            ump.mediaPlayer.setOnErrorListener { _, what, extra ->
                 state = State.Destroyed
                 onError?.invoke(what, extra)
                 true

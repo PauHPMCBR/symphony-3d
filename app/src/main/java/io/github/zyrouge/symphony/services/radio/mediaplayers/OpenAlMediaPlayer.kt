@@ -1,25 +1,12 @@
 package io.github.zyrouge.symphony.services.radio.mediaplayers
 
 import android.content.Context
-import android.media.MediaPlayer
 import android.net.Uri
 
 class OpenAlMediaPlayer() : MediaPlayerI {
     override val isPlaying get() = true
     override val currentTrackTimeMs get() = 1
     override val trackDurationMs get() = 1
-
-    override fun setOnPreparedListener(listener: () -> Unit) {
-        TODO("Not yet implemented")
-    }
-
-    override fun setOnCompletionListener(listener: () -> Unit) {
-        TODO("Not yet implemented")
-    }
-
-    override fun setOnErrorListener(listener: (MediaPlayer, Int, Int) -> Boolean) {
-        TODO("Not yet implemented")
-    }
 
     override fun setDataSource(context: Context, uri: Uri) {
         TODO("Not yet implemented")
