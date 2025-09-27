@@ -3,6 +3,7 @@ package io.github.zyrouge.symphony.services.radio.mediaplayers
 import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
+import io.github.zyrouge.symphony.services.radio.RadioPlayer
 
 class AndroidMediaPlayer() : MediaPlayerI {
     val mediaPlayer = MediaPlayer()
@@ -10,18 +11,6 @@ class AndroidMediaPlayer() : MediaPlayerI {
     override val isPlaying get() = mediaPlayer.isPlaying
     override val currentTrackTimeMs get() = mediaPlayer.currentPosition
     override val trackDurationMs get() = mediaPlayer.duration
-
-    override fun setOnPreparedListener(listener: () -> Unit) {
-        mediaPlayer.setOnPreparedListener { listener }
-    }
-
-    override fun setOnCompletionListener(listener: () -> Unit) {
-        mediaPlayer.setOnCompletionListener { listener }
-    }
-
-    override fun setOnErrorListener(listener: ((MediaPlayer, Int, Int) -> Boolean)) {
-        mediaPlayer.setOnErrorListener(listener)
-    }
 
     override fun setDataSource(context: Context, uri: Uri) {
         mediaPlayer.setDataSource(context, uri)

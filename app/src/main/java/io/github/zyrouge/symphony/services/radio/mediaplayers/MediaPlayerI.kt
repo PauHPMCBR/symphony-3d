@@ -9,10 +9,6 @@ interface MediaPlayerI {
     val currentTrackTimeMs: Int
     val trackDurationMs: Int
 
-    fun setOnPreparedListener(listener: () -> Unit)
-    fun setOnCompletionListener(listener: () -> Unit)
-    fun setOnErrorListener(listener: ((MediaPlayer, Int, Int) -> Boolean))
-
     fun setDataSource(context: Context, uri: Uri)
     fun prepareAsync()
 

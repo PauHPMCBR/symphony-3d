@@ -9,18 +9,6 @@ class OpenAlMediaPlayer() : MediaPlayerI {
     override val currentTrackTimeMs get() = 1
     override val trackDurationMs get() = 1
 
-    override fun setOnPreparedListener(listener: () -> Unit) {
-        TODO("Not yet implemented")
-    }
-
-    override fun setOnCompletionListener(listener: () -> Unit) {
-        TODO("Not yet implemented")
-    }
-
-    override fun setOnErrorListener(listener: (MediaPlayer, Int, Int) -> Boolean) {
-        TODO("Not yet implemented")
-    }
-
     override fun setDataSource(context: Context, uri: Uri) {
         TODO("Not yet implemented")
     }
